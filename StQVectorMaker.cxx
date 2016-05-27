@@ -233,24 +233,6 @@ void StQVectorMaker::getTrackInfo()
     if(Q.Mod()>0)
       hEventPlaneCent->Fill(mCent, eventPlane);
 }
-
-int StQVectorMaker::Centrality(int gRefMult)
-{
-    int centrality;
-    int centFull[9] = {8,18,35,62,103,161,240,347,415};
-    if      (gRefMult>=centFull[8]) centrality=0;
-    else if (gRefMult>=centFull[7]) centrality=1;
-    else if (gRefMult>=centFull[6]) centrality=2;
-    else if (gRefMult>=centFull[5]) centrality=3;
-    else if (gRefMult>=centFull[4]) centrality=4;
-    else if (gRefMult>=centFull[3]) centrality=5;
-    else if (gRefMult>=centFull[2]) centrality=6;
-    else if (gRefMult>=centFull[1]) centrality=7;
-    else if (gRefMult>=centFull[0]) centrality=8;
-    else centrality = 9;
-    
-    return centrality;
-}
 bool StQVectorMaker::isMinBiasTrigger() const 
 {
   int mTriggerId[5] = {450050, 450060,

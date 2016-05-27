@@ -27,7 +27,6 @@ class StQVectorMaker : public StMaker {
     void getEventInfo();
     void getTrackInfo();
     void setOutputName(Char_t* dir=".", Char_t* name="test");
-    int Centrality(int gRefMult);
     bool isMinBiasTrigger() const;
   private:
     StPicoDstMaker *mPicoDstMaker;
