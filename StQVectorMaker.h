@@ -13,6 +13,7 @@ class TH1F;
 class TH2F;
 class TH3F;
 class TProfile;
+class StQVectorHists;
 
 class StQVectorMaker : public StMaker {
   public:
@@ -56,20 +57,13 @@ class StQVectorMaker : public StMaker {
     TH1F*      hDca;
     TH1F*      hEta;
     TH1F*      hPt;
-
-    //event plane and Q vector
+    // Event Planes
     TH2F*      hPhiCentEtaPlusZPlus;
     TH2F*      hPhiCentEtaPlusZMinus;
     TH2F*      hPhiCentEtaMinusZPlus;
     TH2F*      hPhiCentEtaMinusZMinus;
+    StQVectorHists* eventPlane[qVectorConst::mNoEP];
 
-    TProfile*  prfQxCentEtaPlus;
-    TProfile*  prfQyCentEtaPlus;
-    TProfile*  prfQxCentEtaMinus;
-    TProfile*  prfQyCentEtaMinus;
-
-    TH2F*      hEventPlaneCent;
-    TH3F*      hQyQxCent;
 
     ClassDef(StQVectorMaker, 1)
 };

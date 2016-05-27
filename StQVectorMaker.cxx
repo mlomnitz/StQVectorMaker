@@ -13,6 +13,7 @@
 #include "TProfile.h"
 #include "TVector2.h"
 
+#include "StQVectorHists.h"
 ClassImp(StQVectorMaker)
 
 using namespace qVectorConst;
@@ -53,7 +54,7 @@ Int_t StQVectorMaker::Init()
     hEta = new TH1F("hEta", "hEta", 30, -1.5, 1.5);
     hPt = new TH1F("hPt", "hPt", 200, 0, 10);
     
-    // event plane and Q vector
+    // Phi dist
     float PI = TMath::Pi();
 
     hPhiCentEtaPlusZPlus = new TH2F("hPhiCentEtaPlusZPlus","hPhiCentEtaPlusZPlus",9,0,9,120,-PI,PI);
@@ -61,13 +62,9 @@ Int_t StQVectorMaker::Init()
     hPhiCentEtaMinusZPlus = new TH2F("hPhiCentEtaMinusZPlus","hPhiCentEtaMinusZPlus",9,0,9,120,-PI,PI);
     hPhiCentEtaMinusZMinus = new TH2F("hPhiCentEtaMinusZMinus","hPhiCentEtaMinusZMinus",9,0,9,120,-PI,PI);
 
-    prfQxCentEtaPlus = new TProfile("prfQxCentEtaPlus","prfQxCentEtaPlus",9,0,9);
-    prfQyCentEtaPlus = new TProfile("prfQyCentEtaPlus","prfQyCentEtaPlus",9,0,9);
-    prfQxCentEtaMinus = new TProfile("prfQxCentEtaMinus","prfQxCentEtaMinus",9,0,9);
-    prfQyCentEtaMinus = new TProfile("prfQyCentEtaMinus","prfQyCentEtaMinus",9,0,9);
-
-    hEventPlaneCent = new TH2F("hEventPlaneCent","hEventPlaneCent",9,0,9,60,0,PI);
-    hQyQxCent = new TH3F("hQyQxCent", "hQyQxCent", 9,0,9,1000,-50,50,1000,-50,50);
+    for(int ii = 0; ii<mNoEP; ++ii){
+      eventPlane[ii] = new StQVectorHists(mEPHarmonic[ii]);
+    }
 
     return kStOK;
 }
@@ -165,7 +162,9 @@ void StQVectorMaker::getEventInfo()
 void StQVectorMaker::getTrackInfo()
 {
     float vertexZ = mPicoEvent->primaryVertex().z();
-    float Qx=0., Qy=0.;
+    //float Qx=0., Qy=0.;
+    float Qx[mNoEP] = {0};
+    float Qy[mNoEP] = {0};
 
     //Load tracks for default vertex index
     for(int iTrack=0; iTrack<mPicoDst->numberOfTracks(); iTrack++)
@@ -198,29 +197,19 @@ void StQVectorMaker::getTrackInfo()
             if(eta>0 && vertexZ<0) hPhiCentEtaPlusZMinus->Fill(mCent, phi);
             if(eta<0 && vertexZ>0) hPhiCentEtaMinusZPlus->Fill(mCent, phi);
             if(eta<0 && vertexZ<0) hPhiCentEtaMinusZMinus->Fill(mCent, phi);
-
-            float qx = cos(2*phi)*pt;
-            float qy = sin(2*phi)*pt;
-
-            if(eta>0)
-                {
-                    prfQxCentEtaPlus->Fill(mCent, qx);
-                    prfQyCentEtaPlus->Fill(mCent, qy);
-                }
-            else
-                {
-                    prfQxCentEtaMinus->Fill(mCent, qx);
-                    prfQyCentEtaMinus->Fill(mCent, qy);
-                }
-
-            Qx += qx;
-            Qy += qy;
+	    
+	    for(int iEP = 0; iEP < mNoEP; ++iEP){
+	      float qx = cos(mEPHarmonic[iEP]*phi)*pt;
+	      float qy = sin(mEPHarmonic[iEP]*phi)*pt;
+	     
+	      eventPlane[iEP]->addTrack(mCent, eta, qx, qy);
+	      
+	      Qx[iEP] += qx;
+	      Qy[iEP] += qy;
+	    }
         }//loop thru picoTracks
-    TVector2 Q(Qx, Qy);
-    float eventPlane = Q.Phi()*0.5;
-    hQyQxCent->Fill(mCent, Qx, Qy);
-    if(Q.Mod()>0)
-      hEventPlaneCent->Fill(mCent, eventPlane);
+    for(int iEP = 0 ; iEP  < mNoEP; ++iEP)
+      eventPlane[iEP]->addEventPlane(mCent, Qx[iEP], Qy[iEP]);
 }
 bool StQVectorMaker::isMinBiasTrigger() const 
 {
