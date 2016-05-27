@@ -15,6 +15,7 @@
 
 ClassImp(StQVectorMaker)
 
+using namespace qVectorConst;
 //-----------------------------------------------------------------------------
 StQVectorMaker::StQVectorMaker(const char* name, StPicoDstMaker *picoMaker)
 : StMaker(name)
@@ -34,18 +35,6 @@ Int_t StQVectorMaker::Init()
     mAcceptEvent = false;
 
     mRefMultCorr = new StRefMultCorr("grefmult");
-
-    //Event Cuts 
-    mVzMax = 6.0;
-    mDeltaVzMax = 3.0;
-
-    //Track Cuts
-    mNHitsFitMin = 15;
-    mNHitsFitRatioMin = 0.52;
-    mEtaMax = 1.0;
-    mPtMin = 0.15;
-    mPtMax = 2.;
-    mDcaMax = 3.0;
 
     mFileOut = new TFile(mOutputName, "recreate");
 

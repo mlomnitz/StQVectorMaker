@@ -3,7 +3,7 @@
 #include "StMaker.h"
 #include "StThreeVectorF.hh"
 #include "TString.h"
-
+#include "StQVectorConstants.h"
 class StPicoDst;
 class StPicoEvent;
 class StPicoDstMaker;
@@ -38,17 +38,6 @@ class StQVectorMaker : public StMaker {
     int         mCent;
     float       mBField;
     StThreeVectorF mVertexPos;
-
-    //cuts
-    Float_t mVzMax;
-    Float_t mRefMultMin;
-    Float_t mDeltaVzMax;
-    Float_t mPtMin;
-    Float_t mPtMax;
-    UShort_t mNHitsFitMin;
-    Float_t mNHitsFitRatioMin;
-    Float_t mDcaMax;
-    Float_t mEtaMax;
 
     TString mOutputName;
     TFile* mFileOut;
