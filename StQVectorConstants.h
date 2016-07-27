@@ -10,9 +10,9 @@ namespace qVectorConst{
   float const mNHitsFitMin = 15;
   float const mNHitsFitRatioMin = 0.52;
   float const mEtaMax = 1.0;
-  float const mPtMin = 0.15;
+  float const mPtMin = 0.2;
   float const mPtMax = 2.;
-  float const mDcaMax = 3.0;
+  float const mDcaMax = 1.0;
   //
   int const mNoEP = 2;
   int const mEPHarmonic[mNoEP] = {2,3};
