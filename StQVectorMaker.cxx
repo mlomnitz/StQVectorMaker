@@ -151,6 +151,8 @@ void StQVectorMaker::getEventInfo()
     mRefMultCorr->initEvent(mPicoDst->event()->grefMult(),mVertexPos.z(),mPicoDst->event()->ZDCx()) ;
     mCent  = mRefMultCorr->getCentralityBin9();
 
+    if (mCent < 0 || mCent > 8) return;
+    
     hCentrality->Fill(mCent);
 
     mAcceptEvent = true;
@@ -175,7 +177,7 @@ void StQVectorMaker::getTrackInfo()
             }
             
             hNHitsFit->Fill(picoTrack->nHitsFit());
-            if(picoTrack->nHitsFit() < mNHitsFitMin) continue;
+            if(picoTrack->nHitsFit() <= mNHitsFitMin) continue;
 	    if(1.*picoTrack->nHitsFit()/picoTrack->nHitsMax() < mNHitsFitRatioMin) continue;
 
 	    StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
@@ -185,9 +187,18 @@ void StQVectorMaker::getTrackInfo()
             
 	    float pathLengthToPrimaryVertex =helix.pathLength(mVertexPos.x(), mVertexPos.y());
 	    StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField*kilogauss);
-            float pt = momentum.perp();
-            float eta = momentum.pseudoRapidity();
-            float phi = momentum.phi();
+	    double pt, eta, phi;
+	    if( picoTrack->pMom().perp() > 0 ){
+	      eta =picoTrack->pMom().pseudoRapidity();
+	      pt =picoTrack->pMom().perp();
+	      phi =picoTrack->pMom().phi();
+	    }
+	    else{
+	      pt = momentum.perp();
+	      eta = momentum.pseudoRapidity();
+	      phi = momentum.phi();
+	    }
+	    if( phi < 0 ) phi+=2.*TMath::Pi();
             hEta->Fill(eta);
             hPt->Fill(pt);
             if(fabs(eta) > mEtaMax) continue;
