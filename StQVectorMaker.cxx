@@ -1,3 +1,4 @@
+#define only__primary
 #include "StQVectorMaker.h"
 #include "StRoot/StPicoDstMaker/StPicoDst.h"
 #include "StRoot/StPicoDstMaker/StPicoEvent.h"
@@ -194,6 +195,9 @@ void StQVectorMaker::getTrackInfo()
 	      phi =picoTrack->pMom().phi();
 	    }
 	    else{
+#ifdef only__primary	     
+	      continue;
+#endif
 	      pt = momentum.perp();
 	      eta = momentum.pseudoRapidity();
 	      phi = momentum.phi();
